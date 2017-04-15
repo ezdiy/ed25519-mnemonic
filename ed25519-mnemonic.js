@@ -1,6 +1,6 @@
 function shr256(x, n)
 {
-   var carry = 0, mask = (1<<n)-1
+   var i, carry = 0, mask = (1<<n)-1
    for (i = 8; i >= 0; i--) {
       var newcarry = (x[i] & mask) << (32 - n)
       x[i] = carry | (x[i] >>> n)
@@ -10,7 +10,7 @@ function shr256(x, n)
 
 function shl256(x, n)
 {
-   var carry = 0, mask = ((1<<n)-1) << (32 - n)
+   var i, carry = 0, mask = ((1<<n)-1) << (32 - n)
    for (i = 0; i < 9; i++) {
       var newcarry = (x[i] & mask) >>> (32 - n)
       x[i] = carry | (x[i] << n)
@@ -20,10 +20,10 @@ function shl256(x, n)
 
 function parity(sum, v, n)
 {
-	var i
-	for (i = 0; i < 32; i += n)
-		sum = (sum ^ (v>>i))
-	return sum
+  var i
+  for (i = 0; i < 32; i += n)
+    sum = (sum ^ (v>>i))
+  return sum
 }
 
 exports.Dict = function (dict)
@@ -68,7 +68,7 @@ exports.private_to_mnemonic = function(sk, dict)
     phrase.push(word)
     shr256(t, dict.bits);
   }
-  return phrase;
+  return phrase
 }
 
 exports.mnemonic_to_seed = function(phrase, dict)
