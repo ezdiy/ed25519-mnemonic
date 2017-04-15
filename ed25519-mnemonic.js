@@ -45,7 +45,7 @@ exports.private_to_mnemonic = function(sk, dict)
   var dv = new DataView(new Uint8Array(sk).buffer)
   for (i = 0; i < 8; i++) {
     var v = dv.getInt32(i * 4, true)
-    sum = ((sum<<dict.checkbits)+sum+v)|0
+    sum = ((sum<<3)+(sum>>16)+sum+v)|0
     t.push(v);
   }
   t.push(0)
@@ -79,7 +79,7 @@ exports.mnemonic_to_seed = function(phrase, dict)
   var dv = new DataView(t.buffer)
   for (i = 0; i < 8; i++) {
     var v = dv.getInt32(i * 4, true)
-    sum = ((sum<<dict.checkbits)+sum+v)|0
+    sum = ((sum<<3)+(sum>>16)+sum+v)|0
     t[i] = v
   }
   if ((sum & dict.checkmask) != sum2) return null
