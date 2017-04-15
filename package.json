@@ -1,0 +1,19 @@
+{
+  "name": "ed25519-mnemonic",
+  "version": "1.0.0",
+  "description": "Mnemonic for paper backup of your private ed25519 key",
+  "main": "ed25519-mnemonic.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ezdiy/ed25519-mnemonic.git"
+  },
+  "author": "ezdiy",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/ezdiy/ed25519-mnemonic/issues"
+  },
+  "homepage": "https://github.com/ezdiy/ed25519-mnemonic#readme"
+}
