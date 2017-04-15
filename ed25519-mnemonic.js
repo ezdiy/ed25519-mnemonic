@@ -86,9 +86,8 @@ exports.mnemonic_to_seed = function(phrase, dict)
   shr256(t, dict.checkbits)
   var dv = new DataView(t.buffer)
   for (i = 0; i < 8; i++) {
-    var v = dv.getInt32(i * 4, true)
-    sum = parity(sum, v, dict.checkbits)
-    t[i] = v
+    sum = parity(sum, t[i], dict.checkbits)
+    t[i] = dv.getInt32(i * 4, true)
   }
   if ((sum & dict.checkmask) != sum2) return null
   return t.slice(0,8).buffer
