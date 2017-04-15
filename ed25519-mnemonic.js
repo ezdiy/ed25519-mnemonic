@@ -18,6 +18,14 @@ function shl256(x, n)
    }
 }
 
+function parity(sum, v, n)
+{
+	var i
+	for (i = 0; i < 32; i += n)
+		sum = (sum ^ (v>>i))
+	return sum
+}
+
 exports.Dict = function (dict)
 {
   var bits = Math.log2(dict.length)
@@ -40,12 +48,12 @@ exports.private_to_mnemonic = function(sk, dict)
 {
   var sk = sk.slice(0, 32)
   var i, t = [];
-  var sum = 5381;
+  var sum = 0;
   // endian
   var dv = new DataView(new Uint8Array(sk).buffer)
   for (i = 0; i < 8; i++) {
     var v = dv.getInt32(i * 4, true)
-    sum = ((sum<<3)+(sum>>16)+sum+v)|0
+    sum = parity(sum, v, dict.checkbits)
     t.push(v);
   }
   t.push(0)
@@ -74,12 +82,12 @@ exports.mnemonic_to_seed = function(phrase, dict)
     shl256(t, dict.bits)
     t[0] |= idx
   }
-  var sum = 5381, sum2 = t[0] & dict.checkmask
+  var sum = 0, sum2 = t[0] & dict.checkmask
   shr256(t, dict.checkbits)
   var dv = new DataView(t.buffer)
   for (i = 0; i < 8; i++) {
     var v = dv.getInt32(i * 4, true)
-    sum = ((sum<<3)+(sum>>16)+sum+v)|0
+    sum = parity(sum, v, dict.checkbits)
     t[i] = v
   }
   if ((sum & dict.checkmask) != sum2) return null
