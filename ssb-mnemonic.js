@@ -1,4 +1,5 @@
 var M = require('./ed25519-mnemonic')
+try { var P = require('proquint') } catch(e) {}
 var fs = require('fs')
 var chloride = require('chloride')
 
@@ -10,14 +11,24 @@ var dict = new M.Dict(fs.readFileSync("wordlist8k.txt").toString().split("\n").f
 
 if (!process.argv[2]) {
   var priv = new Buffer(JSON.parse(fs.readFileSync(home() + '/.ssb/secret').toString().replace(/^#.*/mg,'')).private, 'base64')
-  console.log("Key found in ~/.ssb/secret, the mnemonic is: ")
+  console.log("Key found in ~/.ssb/secret")
+  if (P) {
+    console.log("\nThe proquint is: ")
+    console.log(P.encode(priv.slice(0,32)))
+  }
+  console.log("\nThe mnemonic is: ")
   console.log(M.private_to_mnemonic(priv, dict).join(' '))
 } else {
-  var phrase = process.argv[2].split(' ')
-  var seed = M.mnemonic_to_seed(phrase, dict)
-  if (!seed) {
-    console.log('incorrect mnemonic')
-    return
+  var seed, phrase = process.argv[2]
+  phrase = phrase.split(' ')
+  if (phrase.length === 1 && P) {
+    seed = P.decode(phrase[0])
+  } else {
+    seed = M.mnemonic_to_seed(phrase, dict)
+    if (!seed) {
+      console.log('incorrect mnemonic')
+      return
+    }
   }
   console.log("Reconstructed key from supplied mnemonic: ")
   var res = chloride.crypto_sign_seed_keypair(new Buffer(seed))
